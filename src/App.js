@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import Axios from "axios";
 
 import "./App.css";
 
@@ -32,9 +33,22 @@ function App() {
     var { uname, pass } = document.forms[0];
 
     // Find user login info
-    const userData = database.find((user) => user.username === uname.value);
-
+    //const userData = database.find((user) => user.username === uname.value);
+    Axios.post('http://localhost:5432/login', {
+      email: uname,
+      password: pass
+    }).then((response) => {
+      if (!response.data.message) 
+      {
+        setIsSubmitted(true);
+      }
+      else {
+        setErrorMessages(response.data.message)
+      }
+    })
+  }
     // Compare user info
+    /*
     if (userData) {
       if (userData.password !== pass.value) {
         // Invalid password
@@ -47,13 +61,13 @@ function App() {
       setErrorMessages({ name: "uname", message: errors.uname });
     }
   };
-
+  
   // Generate JSX code for error message
   const renderErrorMessage = (name) =>
     name === errorMessages.name && (
       <div className="error">{errorMessages.message}</div>
     );
-
+*/
   // JSX code for login form
   const renderForm = (
     <div className="form">
@@ -61,12 +75,12 @@ function App() {
         <div className="input-container">
           <label>Username </label>
           <input type="text" name="uname" required />
-          {renderErrorMessage("uname")}
+          
         </div>
         <div className="input-container">
           <label>Password </label>
           <input type="password" name="pass" required />
-          {renderErrorMessage("pass")}
+          
         </div>
         <div className="button-container">
           <input type="submit" />
@@ -78,7 +92,7 @@ function App() {
   return (
     <div className="app">
       <div className="login-form">
-        <div className="title">Sign In</div>
+        <div className="title">Welcome to Kikoki! Please Sign In</div>
         {isSubmitted ? <div>User is successfully logged in</div> : renderForm}
       </div>
     </div>
